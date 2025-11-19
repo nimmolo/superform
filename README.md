@@ -359,15 +359,45 @@ class SignupForm < Components::Form
       end
     end
 
+    # Boolean checkbox - single true/false toggle
     div do
       Field(:agreement).label { "Check this box if you agree to give us your first born child" }
       Field(:agreement).checkbox(checked: true)
+    end
+
+    # Checkbox collection - for multi-select from multiple options
+    div do
+      Field(:role_ids).label { "Select your roles" }
+      # Pass options as positional arguments (similar to radio)
+      Field(:role_ids).checkbox(
+        [1, "Admin"],   # <label><input type="checkbox" value="1">Admin</label>
+        [2, "Editor"],  # <label><input type="checkbox" value="2">Editor</label>
+        [3, "Viewer"]   # <label><input type="checkbox" value="3">Viewer</label>
+      )
+    end
+
+    # Or render individual checkboxes with custom markup
+    div do
+      Field(:feature_ids).label { "Enable features" }
+      Field(:feature_ids).checkbox do |c|
+        div { c.button(1) { "Dark Mode" } }
+        div { c.button(2) { "Notifications" } }
+        div { c.button(3) { "Auto-save" } }
+      end
+    end
+
+    # Checkbox supports ActiveRecord relations
+    div do
+      Field(:tag_ids).label { "Select tags" }
+      # Automatically uses id as value and name as label
+      Field(:tag_ids).checkbox(Tag.select(:id, :name))
     end
 
     render button { "Submit" }
   end
 end
 ```
+
 
 ### Upload fields
 If you want to add file upload fields to your form you will need to initialize your form with the `enctype` attribute set to `multipart/form-data` as shown in the following example code:
